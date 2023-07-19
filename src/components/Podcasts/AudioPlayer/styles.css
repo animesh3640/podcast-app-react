@@ -37,5 +37,9 @@
     .custom-audio-player{
         justify-content: flex-start;
         margin-left: 5%;
+        width: 95%;
+    }
+    .volume-range{
+        width: 30%;
     }
 }
