@@ -13,46 +13,50 @@ function PodcastDetailsPage() {
     const [playingFile,setPlayingFile] = useState();
     const navigate = useNavigate();
     const { id } = useParams();
-    useEffect(async () => {
-        if (id) {
-            getData()
-        }
-    }, [id])
-    const getData = async () => {
-        try {
-            const docRef = doc(db, "podcasts", id);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                console.log("Document data:", docSnap.data());
-                setPodcast({ id: id, ...docSnap.data() })
-            } else {
-                toast.error("No such document!")
-                navigate('/podcasts')
-            }
-        } catch (e) {
-            toast.error(e)
-            navigate('/podcasts')
-        }
-    }
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            query(collection(db, "podcasts", id, 'episodes')),
-            (querySnapshot) => {
-                const episodesData = [];
-                querySnapshot.forEach((doc) => {
-                    episodesData.push({ id: doc.id, ...doc.data() });
-                });
-                setEpisodes(episodesData);
-            },
-            (error) => {
-                console.error("Error fetching episodes:", error);
-            }
-        );
-        return () => {
-            unsubscribe();
+        if (id) {
+          getData();
         }
-    }, [id])
-
+      }, [id]);
+    
+      const getData = async () => {
+        try {
+          const docRef = doc(db, "podcasts", id);
+          const docSnap = await getDoc(docRef);
+    
+          if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            setPodcast({ id: id, ...docSnap.data() });
+          } else {
+            // docSnap.data() will be undefined in this case
+            console.log("No such Podcast!");
+            toast.error("No such Podcast!");
+            navigate("/podcasts");
+          }
+        } catch (e) {
+          toast.error(e.message);
+        }
+      };
+    
+      useEffect(() => {
+        const unsubscribe = onSnapshot(
+          query(collection(db, "podcasts", id, "episodes")),
+          (querySnapshot) => {
+            const episodesData = [];
+            querySnapshot.forEach((doc) => {
+              episodesData.push({ id: doc.id, ...doc.data() });
+            });
+            setEpisodes(episodesData);
+          },
+          (error) => {
+            console.error("Error fetching episodes:", error);
+          }
+        );
+    
+        return () => {
+          unsubscribe();
+        };
+      }, [id]);
     return (
         <div>
             <Header />

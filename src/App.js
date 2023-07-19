@@ -18,9 +18,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const unsubscibeAuth= onAuthStateChanged(auth,(user)=>{
-
-      if(user){
-        
+      if(user){    
         const unsubscibeSnapshot = onSnapshot(
           doc(db,"users",user.uid),
           (userDoc)=>{
@@ -44,12 +42,10 @@ function App() {
         }
       }
     })
-   
     return ()=>{
       unsubscibeAuth()
     };
-
-  }, [])
+  },[])
   
   return (
     <div className="App">
