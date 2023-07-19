@@ -36,8 +36,8 @@
 @media (max-width:500px){
     .custom-audio-player{
         justify-content: flex-start;
-        margin-left: 5%;
-        width: 95%;
+        margin-right: 2%;
+        width: 98%;
     }
     .volume-range{
         width: 30%;
