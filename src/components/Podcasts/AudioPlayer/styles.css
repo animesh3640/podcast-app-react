@@ -28,7 +28,7 @@
 }
 .volume-range{
     filter: hue-rotate(25deg);
-    width: 20%;
+    width: 40%;
 }
 .audio-btn{
     cursor: pointer;
