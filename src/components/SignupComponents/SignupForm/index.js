@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import InputComponent from '../../common/Input'
+import FileInput from '../../common/Input/FileInput'
 import Button from '../../common/Button'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 //firebase
-import { auth, db } from '../../../firebase';
+import { auth, db, storage } from '../../../firebase';
 import {
   createUserWithEmailAndPassword
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
-import {setUser} from '../../../slices/userSlice'
+import { setUser } from '../../../slices/userSlice'
 import { useNavigate } from 'react-router-dom';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 function SignupForm() {
 
@@ -18,12 +20,13 @@ function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading,setLoading] =useState(false);
+  const [fileURL, setFileURL] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   async function handleOnClick() {
-    console.log("Signing up ...")
+    
     setLoading(true)
     if (password.trim() === confirmPassword.trim()) {
       if (password.trim().length >= 6) {
@@ -34,13 +37,14 @@ function SignupForm() {
             auth, email, password
           );
           const user = userCredential.user;
-          console.log("user is ", user)
+          
 
           // saving user's details in db
           await setDoc(doc(db, 'users', user.uid), {
             name: fullname,
             email: user.email,
-            uid: user.uid
+            uid: user.uid,
+            profilePic: fileURL, // added profile pic url to doc
           });
 
           //saving user in redux state 
@@ -48,7 +52,8 @@ function SignupForm() {
             setUser({
               name: fullname,
               email: user.email,
-              uid: user.uid
+              uid: user.uid,
+              profilePic: fileURL, //setting pic url to redux 
             })
           )
           toast.success('User Has been Created !');
@@ -65,6 +70,22 @@ function SignupForm() {
     } else {
       setLoading(false)
       toast.error('Password Does not match !')
+    }
+  }
+
+  //adding profile picture to storage and generate url .
+  const profileImageHandle = async(file) => { 
+    setLoading(true);
+    try {
+      const imageRef = ref(storage, `profile/${Date.now()}`);
+      await uploadBytes(imageRef, file);
+      const imageURL = await getDownloadURL(imageRef);
+      setFileURL(imageURL);
+      setLoading(false);
+      toast.success("Image Uploaded!");
+    } catch (e) {
+      console.log(e);
+      toast.error("Error Occurred!");
     }
   }
 
@@ -99,8 +120,14 @@ function SignupForm() {
         type="password"
         required={true}
       />
+      <FileInput
+        accept={'image/*'}
+        id={'profile-image-input'}
+        fileHandleFnc={profileImageHandle}
+        text={'Upload Profile Image'}
+      />
       <Button
-        text={loading?"Loading..":"Signup"}
+        text={loading ? "Loading.." : "Signup"}
         onClick={handleOnClick}
         disabled={loading}
       />

@@ -4,6 +4,7 @@ import Button from '../../common/Button'
 import { toast } from 'react-toastify';
 import { auth, db } from '../../../firebase';
 import {
+  sendPasswordResetEmail,
   signInWithEmailAndPassword
 } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore';
@@ -19,7 +20,7 @@ function LoginForm() {
   const navigate = useNavigate();
 
   async function handleOnClick() {
-    console.log("Loging in ...")
+
     setLoading(true)
     if (email && password) {
       try {
@@ -30,14 +31,15 @@ function LoginForm() {
 
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const userData = userDoc.data();
-        console.log(userData)
+
 
         //saving user in redux state 
         dispatch(
           setUser({
             name: userData.name,
             email: user.email,
-            uid: user.uid
+            uid: user.uid,
+            profilePic: userData.profilePic,
           })
         )
         toast.success('Login Successfull !')
@@ -53,6 +55,24 @@ function LoginForm() {
       setLoading(false);
       toast.error('Make sure email and password should not empty !')
     }
+  }
+
+  function forgetPasswordHandle() {
+    if(email){
+      sendPasswordResetEmail(auth, email)
+      .then(() => {
+        toast.success('Password Link Shared To Your Email Address !')
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("Error Code",errorCode);
+        console.log("Error Message",errorMessage);
+      });
+    }else{
+      toast.error('Enter Email Address First To Reset Password')
+    }
+
   }
 
   return (
@@ -76,6 +96,9 @@ function LoginForm() {
         onClick={handleOnClick}
         disabled={loading}
       />
+      <p style={{ cursor: 'pointer' }} onClick={forgetPasswordHandle}>
+        Reset Password / Forget password
+      </p>
     </>
   )
 }

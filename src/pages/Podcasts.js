@@ -6,7 +6,9 @@ import { collection, onSnapshot, query } from 'firebase/firestore'
 import { db } from '../firebase';
 import PodcastCard from '../components/Podcasts/PodcastsCard';
 import InputComponent from '../components/common/Input'
+import { toast } from 'react-toastify';
 function PodcastsPage() {
+    const [serchByGenre, setSerchByGenre] = useState();
     const dispatch = useDispatch();
     const podcasts = useSelector((state) => state.podcasts.podcasts)
     const [search, setSearch] = useState('');
@@ -30,9 +32,13 @@ function PodcastsPage() {
 
     }, [dispatch]);
 
-    var filteredPodcasts = podcasts.filter((item) => 
-    item.title.trim().toLowerCase().includes(search.trim().toLowerCase())
+    var filteredPodcasts = podcasts.filter((item) =>
+        item.title.trim().toLowerCase().includes(search.trim().toLowerCase())
     );
+
+    var handleFilterByGenre = (search)=>{
+        toast.info('function is comming soon !')
+    }
 
     return (
         <div>
@@ -45,9 +51,32 @@ function PodcastsPage() {
                     placeholder='Search By Title'
                     type="text"
                 />
+                <select className='genre-dropdown' id="main-genre-dropdown" onChange={(e) => { setSerchByGenre(e.target.value) ; handleFilterByGenre(serchByGenre) }}>
+                    <option defaultValue="" selected disabled>Filter Podcast By Genre</option>
+                    <option value="arts_culture">Arts & Culture</option>
+                    <option value="business">Business & Entrepreneurship</option>
+                    <option value="comedy">Comedy</option>
+                    <option value="education">Education</option>
+                    <option value="health_fitness">Health & Fitness</option>
+                    <option value="history">History</option>
+                    <option value="true_crime">True Crime</option>
+                    <option value="news_politics">News & Politics</option>
+                    <option value="science_technology">Science & Technology</option>
+                    <option value="society_culture">Society & Culture</option>
+                    <option value="sports">Sports</option>
+                    <option value="music">Music</option>
+                    <option value="personal_development">Personal Development</option>
+                    <option value="food_cooking">Food & Cooking</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="literature">Literature</option>
+                    <option value="parenting_family">Parenting & Family</option>
+                    <option value="spirituality_religion">Spirituality & Religion</option>
+                    <option value="travel_places">Travel & Places</option>
+                    <option value="hobbies_interests">Hobbies & Interests</option>
+                </select>
                 {filteredPodcasts.length > 0
                     ?
-                    <div className='podcasts-flex' style={{marginTop:'1.5rem'}}>
+                    <div className='podcasts-flex' style={{ marginTop: '1.5rem' }}>
                         {
                             filteredPodcasts.map((podcast) => (
                                 <PodcastCard
@@ -59,7 +88,7 @@ function PodcastsPage() {
                             ))
                         }
                     </div>
-                    : <p>{search?'Podcast Not Found':'No Podcast On The Platform'}</p>
+                    : <p>{search ? 'Podcast Not Found' : 'No Podcast On The Platform'}</p>
                 }
             </div>
         </div>

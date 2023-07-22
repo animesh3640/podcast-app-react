@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Header from '../components/common/Header'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import InputComponent from '../components/common/Input'
 import FileInput from '../components/common/Input/FileInput'
 import Button from '../components/common/Button'
@@ -9,6 +8,8 @@ import { toast } from 'react-toastify'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { auth, db, storage } from '../firebase'
 import { addDoc, collection } from 'firebase/firestore'
+import { useDispatch } from 'react-redux'
+import { setEpisodes } from '../slices/episodeSlice'
 
 function CreateAnEpisodePage() {
     const { id } = useParams();
@@ -18,7 +19,6 @@ function CreateAnEpisodePage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     const audioFileHandle = (file) => {
         setAudioFile(file);
     }
@@ -42,6 +42,10 @@ function CreateAnEpisodePage() {
                     collection(db, "podcasts", id, "episodes"),
                     episodeData
                 );
+
+                // saving data to episode slice
+                dispatch(setEpisodes(episodeData));
+
                 toast.success('Episode Created Successfully !')
                 setLoading(false);
                 navigate(`/podcast/${id}`)

@@ -7,25 +7,26 @@ import { toast } from 'react-toastify';
 import Button from '../components/common/Button';
 import EpisodeDetails from '../components/Podcasts/EpisodeDetails';
 import AudioPlayer from '../components/Podcasts/AudioPlayer';
+import { useSelector } from 'react-redux';
 function PodcastDetailsPage() {
     const [podcast, setPodcast] = useState({});
-    const [episodes, setEpisodes] = useState();
+    const [episodes, setEpisodes] = useState([]);
     const [playingFile,setPlayingFile] = useState();
     const navigate = useNavigate();
+    const episodeSLiceData = useSelector((state)=>state.episode.episodes)
+    console.log("Episodes Slice Data = ",episodeSLiceData)
     const { id } = useParams();
     useEffect(() => {
         if (id) {
           getData();
         }
-      }, [id]);
+      },[id]);
     
       const getData = async () => {
         try {
           const docRef = doc(db, "podcasts", id);
           const docSnap = await getDoc(docRef);
-    
           if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
             setPodcast({ id: id, ...docSnap.data() });
           } else {
             // docSnap.data() will be undefined in this case

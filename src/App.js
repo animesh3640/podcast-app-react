@@ -14,6 +14,7 @@ import CreateAPodcastPage from "./pages/CreateAPodcast";
 import PodcastsPage from "./pages/Podcasts";
 import PodcastDetailsPage from "./pages/PodcastDetails";
 import CreateAnEpisodePage from "./pages/CreateAnEpisode";
+import EditProfile from "./pages/EditProfile";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -29,6 +30,7 @@ function App() {
                   name:userData.name,
                   email:userData.email,
                   uid:user.uid,
+                  profilePic: userData.profilePic,
                 })
               );
             }
@@ -59,7 +61,7 @@ function App() {
             <Route path="/podcasts" element={<PodcastsPage />}/>
             <Route path="/podcast/:id" element={<PodcastDetailsPage />}/>
             <Route path="/podcast/:id/create-episode" element={<CreateAnEpisodePage />}/>
-
+            <Route path="/editprofile" element={<EditProfile/>}/>
           </Route>
         </Routes>
       </Router>
