@@ -38,12 +38,12 @@
     .navbar{
         margin-left: 40px;
         max-width: 99vw;
-        margin-right: 10px;
+
     } 
     .links{
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 0.6rem;
+        gap: 1.0rem;
     }
 }
