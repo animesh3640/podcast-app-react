@@ -36,12 +36,14 @@
 }
 @media (max-width: 600px){
     .navbar{
-        margin-left: 50px;
+        margin-left: 40px;
+        max-width: 99vw;
+        margin-right: 10px;
     } 
     .links{
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 0.8rem;
+        gap: 0.6rem;
     }
 }
