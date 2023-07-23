@@ -8,7 +8,7 @@ import PodcastCard from '../components/Podcasts/PodcastsCard';
 import InputComponent from '../components/common/Input'
 import { toast } from 'react-toastify';
 function PodcastsPage() {
-    const [serchByGenre, setSerchByGenre] = useState();
+    const [serchByGenre, setSerchByGenre] = useState('');
     const dispatch = useDispatch();
     const podcasts = useSelector((state) => state.podcasts.podcasts)
     const [search, setSearch] = useState('');
@@ -32,13 +32,13 @@ function PodcastsPage() {
 
     }, [dispatch]);
 
-    var filteredPodcasts = podcasts.filter((item) =>
-        item.title.trim().toLowerCase().includes(search.trim().toLowerCase())
+    // filter podcast by title and by genre 
+    var filteredPodcasts = podcasts.filter((item) =>{
+            if(item.title.trim().toLowerCase().includes(search.trim().toLowerCase()) && item.Genre.trim().toLowerCase().includes(serchByGenre.trim().toLowerCase())) 
+                return true
+        }
     );
 
-    var handleFilterByGenre = (search)=>{
-        toast.info('function is comming soon !')
-    }
 
     return (
         <div>
@@ -51,7 +51,7 @@ function PodcastsPage() {
                     placeholder='Search By Title'
                     type="text"
                 />
-                <select className='genre-dropdown' id="main-genre-dropdown" onChange={(e) => { setSerchByGenre(e.target.value) ; handleFilterByGenre(serchByGenre) }}>
+                <select className='genre-dropdown' id="main-genre-dropdown" onChange={(e) => { setSerchByGenre(e.target.value) }}>
                     <option defaultValue="" selected disabled>Filter Podcast By Genre</option>
                     <option value="arts_culture">Arts & Culture</option>
                     <option value="business">Business & Entrepreneurship</option>

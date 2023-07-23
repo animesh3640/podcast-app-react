@@ -12,6 +12,7 @@ function AudioPlayer({ audioSrc, image }) {
     const handleDuration = (e) => {
         setCurrentTime(e.target.value)
         audioRef.current.currentTime = e.target.value;
+
     }
     const handleVolume = (e) => {
         setVolume(e.target.value)

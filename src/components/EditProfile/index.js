@@ -7,7 +7,7 @@ import Button from '../common/Button';
 import { toast } from 'react-toastify';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { db, storage } from '../../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 
 function EditProfileForm() {
@@ -18,22 +18,22 @@ function EditProfileForm() {
   const user = useSelector((state) => state.user.user);
   
   async function handleOnClick() {
-    // setLoading(true)
-    // try {
-    //   const userRef = doc(db, `user`, user.uid);
-    //   await updateDoc(userRef, {
-    //     email:email,
-    //     name:fullname,
-    //   });
-    //   console.log('Document successfully updated!');
-    //   setLoading(false)
-    //   toast.success('Profile Updated Successfully');
-    // } catch (e) {
-    //   console.log(e)
-    //   toast.error(e.message)
-    //   setLoading(false)
-    // }
-    toast.info('This Function Comming Soon !')
+    setLoading(true)
+    const updatedData={
+      email:email,
+      name:fullname,
+      profilePic:fileURL
+    }
+    try { 
+      await setDoc(doc(db, "users", user.uid),updatedData);
+      toast.success('Profile Updated !')
+      setLoading(false)
+      
+    } catch (e) {
+      console.log("Error = ",e)
+      toast.error(e.message)
+      setLoading(false)
+    }
   }
 
   //adding profile picture to storage and generate url .
