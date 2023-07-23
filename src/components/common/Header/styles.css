@@ -34,3 +34,9 @@
 .logoutLink{
     color: #8ea6bb !important;
 }
+@media (max-width: 400px){
+    .navbar{
+        max-width: 90vw;
+    } 
+    
+}
